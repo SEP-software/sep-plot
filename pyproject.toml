@@ -12,7 +12,7 @@ maintainesr=[
     "bob@sep.stanford.edu"
 ]
 dependencies=[ 'holoviews>=1.14.1', 
-      'sep_python @ git+http://zapad.stanford.edu/bob/sep-python.git@6f8d0011c30cfb5e03622133846d80fff4df37c2'
+      'sep_python @ git+https://github.com/SEP-software/sep-python.git@a97167fd1e6ff3cd7116cffccad78ba604e0891d'
             ]
 
 

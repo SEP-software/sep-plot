@@ -1,6 +1,6 @@
 import numpy as np
-from sep_python.hypercube import Hypercube
-from sep_python.sep_proto import MemReg
+from sep_python._hypercube import Hypercube
+from sep_python._sep_proto import MemReg
 
 
 def get_hyper_numpy(vec):

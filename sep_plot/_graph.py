@@ -1,7 +1,7 @@
 import holoviews as hv
 import math
 import numpy as np
-from sep_python.hypercube import Hypercube
+from sep_python._hypercube import Hypercube
 from sep_plot._shared import get_hyper_numpy
 
 

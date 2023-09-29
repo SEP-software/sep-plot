@@ -1,7 +1,7 @@
 """Module for displaying plots as a series of dots"""
 import holoviews as hv
 import numpy as np
-from sep_python.hypercube import Hypercube
+from sep_python._hypercube import Hypercube
 from sep_plot._shared import get_hyper_numpy
 
 hv.extension("bokeh", "matplotlib")

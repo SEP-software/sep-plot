@@ -1,7 +1,7 @@
 import numpy as np
 import holoviews as hv
-from sep_python.sep_proto import MemReg
-from sep_python.hypercube import Hypercube
+from sep_python._sep_proto import MemReg
+from sep_python._hypercube import Hypercube
 from sep_plot._shared import get_hyper_numpy
 
 hv.extension("bokeh", "matplotlib")
