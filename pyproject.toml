@@ -1,0 +1,22 @@
+[project]
+
+name='sep_plot'
+version='0.9.102'
+description='A library to do basic sep graphics'
+
+authors=[
+    {name="Bob Clapp", email="bob@sep.stanford.edu"}
+]
+
+maintainesr=[
+    "bob@sep.stanford.edu"
+]
+dependencies=[ 'holoviews>=1.14.1', 
+      'sep_python @ git+http://zapad.stanford.edu/bob/sep-python.git@6f8d0011c30cfb5e03622133846d80fff4df37c2'
+            ]
+
+
+[build-system]
+build-backend = "flit_core.buildapi"
+requires = ["flit_core >=3.2,<4"]
+

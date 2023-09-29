@@ -1,0 +1,10 @@
+build*
+*.sw*
+lib
+.vscode
+include
+RUN_THIS
+.DS_Store
+notebooks/.i*
+__pycache__
+sepPlot.egg-info

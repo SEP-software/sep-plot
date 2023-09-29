@@ -1,0 +1,80 @@
+From debian:latest
+MAINTAINER Bob Clapp <bob@sep.stanford.edu>
+RUN apt-get -y update &&\
+    apt-get -y  install valgrind python-dev swig  libboost-all-dev  libboost-dev g++ git make cmake gcc &&\
+  apt-get -y clean
+RUN apt-get -y update &&\
+    apt-get -y  install libtbb-dev python3-pip python3-numpy-dbg  wget&&\
+  apt-get -y clean
+RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && \
+   bash /tmp/miniconda.sh -b -p /opt/miniconda &&\
+   rm -rf /tmp/miniconda.sh
+ENV PATH /opt/miniconda/bin:${PATH}
+RUN conda install bokeh jupyter matplotlib numpy
+RUN conda install -c conda-forge tini numba pandas holoviews 
+
+RUN apt-get -y update &&\
+    apt-get -y  install flex &&\
+  apt-get -y clean
+
+# Configure environment
+ENV CONDA_DIR=/opt/conda \
+    SHELL=/bin/bash \
+    NB_USER=jovyan \
+    NB_UID=1000 \
+    NB_GID=100 \
+    LC_ALL=en_US.UTF-8 \
+    LANG=en_US.UTF-8 \
+    LANGUAGE=en_US.UTF-8
+ENV PATH=$CONDA_DIR/bin:$PATH \
+    HOME=/home/$NB_USER
+
+ADD fix-permissions /usr/local/bin/fix-permissions
+# Create jovyan user with UID=1000 and in the 'users' group
+# and make sure these dirs are writable by the `users` group.
+RUN groupadd wheel -g 11 && \
+    echo "auth required pam_wheel.so use_uid" >> /etc/pam.d/su && \
+    useradd -m -s /bin/bash -N -u $NB_UID $NB_USER && \
+    mkdir -p $CONDA_DIR && \
+    chown $NB_USER:$NB_GID $CONDA_DIR && \
+    chmod g+w /etc/passwd && \
+    fix-permissions $HOME && \
+    fix-permissions $CONDA_DIR
+
+USER $NB_UID
+
+# Setup work directory for backward-compatibility
+RUN mkdir /home/$NB_USER/work && \
+    fix-permissions /home/$NB_USER
+
+
+## Configure container startup
+ENTRYPOINT ["tini", "-g", "--"]
+CMD ["start-notebook.sh"]
+
+USER root
+
+EXPOSE 8888
+WORKDIR $HOME
+
+# Add local files as late as possible to avoid cache busting
+COPY start.sh /usr/local/bin/
+COPY start-notebook.sh /usr/local/bin/
+COPY start-singleuser.sh /usr/local/bin/
+COPY jupyter_notebook_config.py /etc/jupyter/
+#RUN fix-permissions /etc/jupyter/
+ENV XDG_CACHE_HOME /home/$NB_USER/.cache/
+
+ENV PATH "/opt/SEP/bin:${PATH}"
+env PYTHONPATH "/opt/SEP/lib/python:/opt/SEP/lib:${PYTHONPATH}"
+RUN MPLBACKEND=Agg python -c "import matplotlib.pyplot" && \
+    fix-permissions /home/$NB_USER
+RUN jupyter notebook --generate-config
+RUN echo "c.NotebookApp.password='sha1:26db741293d2:3a80c585d87d27541be94ecfacc63a14a2f51b4e'">>/home/jovyan/.jupyter/jupyter_notebook_config.py
+RUN chown -R jovyan /home/jovyan/.jupyter 
+USER $NB_UID
+
+#docker run -v /Users/bob/docker:/opt/SEP 
+# -v /Users/bob/Src:/opt/packages -v /Users/bob/Src/sepPlot/src/notebooks:/home/jovyan/work -v /Users/bob/show:/home/jovyan/data
+# -p 8888:8888 -t build-t
+#password:local
