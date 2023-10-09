@@ -153,7 +153,7 @@ def plot(vec, **kw):
         base = []
         shifted = []
         notshifted = []
-        dsamp = hyper.get_axes()[1].d
+        dsamp = hyper.axes[1].d
         min_val = vec_num[0, 0]
         max_val = vec_num[0, 0]
         for iy in range(vec_num.shape[0]):
